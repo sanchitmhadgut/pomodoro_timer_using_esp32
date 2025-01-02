@@ -97,7 +97,7 @@ rtc.setSquareWave(SquareWaveDisable);
     , "displaySeg"  // A name just for humans
     , 4096  // This stack size can be checked & adjusted by reading the Stack Highwater
     , NULL
-    , 1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+    , 2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     , NULL
     , ARDUINO_RUNNING_CORE);
 
@@ -106,7 +106,7 @@ rtc.setSquareWave(SquareWaveDisable);
     , "ButtonScan"  // A name just for humans
     , 1024  // This stack size can be checked & adjusted by reading the Stack Highwater
     , NULL
-    , 2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+    , 3  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     , NULL
     , ARDUINO_RUNNING_CORE);
 
@@ -115,7 +115,7 @@ rtc.setSquareWave(SquareWaveDisable);
     , "RtcTime"  // A name just for humans
     , 2048  // This stack size can be checked & adjusted by reading the Stack Highwater
     , NULL
-    , 3  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+    , 1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     , NULL
     , ARDUINO_RUNNING_CORE);  
 
@@ -178,14 +178,18 @@ void ButtonScan(void *pvParameters) {
   (void)pvParameters;
   for (;;) {
     int button_status = Button_Scan();
-    // Serial.println(button_status);
+
+    
+    Serial.println(button_status);
     snprintf(btnBuff, sizeof(btnBuff), "%04d", button_status);
     btnflg = true;
+
+    vTaskDelay(200/ portTICK_PERIOD_MS);
 
     // Signal display task
     xSemaphoreGive(displaySemaphore);
 
-    vTaskDelay(300/ portTICK_PERIOD_MS);
+    
   }
 }
 
@@ -209,7 +213,7 @@ void RtcTime(void *pvParameters){
     Serial.println(F("Read date/time failed"));
   }
 
-  // Serial.println(min);
+  // Serial.println(min); //////////************
     vTaskDelay(1000/ portTICK_PERIOD_MS);
   }
 }
